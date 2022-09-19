@@ -1,13 +1,23 @@
-import { Button, Grid, Link, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  Button,
+  Grid,
+  Link,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { useMemo } from "react";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
 import { useForm } from "../../hooks/useForm";
+import { startCreatingUserWithEmailPassword } from "../../store/auth/thunks";
 import { AuthLayout } from "../layout/AuthLayout";
 
 const formData = {
-  email: "yerson.programador@gmail.com",
-  password: "123456",
-  displayName: "yerson reyes",
+  email: "",
+  password: "",
+  displayName: "",
 };
 
 const formValidations = {
@@ -20,6 +30,12 @@ const formValidations = {
 };
 
 export const RegisterPage = () => {
+  const dispatch = useDispatch();
+  const { status, errorMesage } = useSelector((state) => state.auth);
+  const isCheckingAuthentication = useMemo(
+    () => status === "checking",
+    [status]
+  );
   const [formSubmit, setFormSubmit] = useState(false);
   const {
     onInputChange,
@@ -33,11 +49,12 @@ export const RegisterPage = () => {
     isFormVaid,
   } = useForm(formData, formValidations);
 
-  console.log(emailValid);
-
   const onSubmit = (event) => {
     event.preventDefault();
     setFormSubmit(true);
+    if (!isFormVaid) return;
+
+    dispatch(startCreatingUserWithEmailPassword(formState));
   };
   return (
     <AuthLayout title="Crear cuenta">
@@ -85,8 +102,16 @@ export const RegisterPage = () => {
           </Grid>
 
           <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
+            <Grid item xs={12} display={errorMesage ? "" : "none"}>
+              <Alert severity="error">{errorMesage}</Alert>
+            </Grid>
             <Grid item xs={12}>
-              <Button type="submit" variant="contained" fullWidth>
+              <Button
+                disabled={isCheckingAuthentication}
+                type="submit"
+                variant="contained"
+                fullWidth
+              >
                 Crear una cuenta
               </Button>
             </Grid>
