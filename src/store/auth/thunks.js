@@ -1,5 +1,6 @@
 import { async } from "@firebase/util";
 import {
+  loginWithEmailPassword,
   registerUserWithEmailPassword,
   singInWithGoogle,
 } from "../../firebase/provider";
@@ -37,5 +38,18 @@ export const startCreatingUserWithEmailPassword = ({
 
     if (!ok) return dispatch(logout({ errorMesage }));
     dispatch(login({ displayName, password, email, uid }));
+  };
+};
+
+export const startLoginWithEmailPassword = ({ email, password }) => {
+  return async (dispatch) => {
+    dispatch(checkingCredentials());
+    const { ok, uid, photoURL, errorMesage, displayName } =
+      await loginWithEmailPassword({
+        email,
+        password,
+      });
+    if (!ok) return dispatch(logout({ errorMesage }));
+    dispatch(login({ displayName, email, uid, photoURL, errorMesage }));
   };
 };
