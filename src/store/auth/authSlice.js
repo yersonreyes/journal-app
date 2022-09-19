@@ -25,7 +25,7 @@ export const authSlice = createSlice({
       state.email = null;
       state.displayName = null;
       state.photoURL = null;
-      state.errorMesage = payload.errorMesage;
+      state.errorMesage = payload?.errorMesage;
     },
     checkingCredentials: (state) => {
       state.status = "checking";
