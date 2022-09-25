@@ -1,4 +1,8 @@
-import { SaveOutlined, UploadFileOutlined } from "@mui/icons-material";
+import {
+  DeleteOutline,
+  SaveOutlined,
+  UploadFileOutlined,
+} from "@mui/icons-material";
 import { Button, Grid, IconButton, TextField, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useMemo } from "react";
@@ -10,6 +14,7 @@ import { startSaveNote, startUploadingFiles } from "../../store/journal/thunks";
 import { ImageGallery } from "../components/ImageGallery";
 import "sweetalert2/dist/sweetalert2.css";
 import { useRef } from "react";
+import { startDeletingNote } from "../../store/journal/thunks";
 
 export const NoteViews = () => {
   const disptach = useDispatch();
@@ -46,6 +51,10 @@ export const NoteViews = () => {
   };
 
   const fileInputRef = useRef();
+
+  const onDelete = () => {
+    disptach(startDeletingNote());
+  };
   return (
     <Grid
       className="animate__animated animate__fadeIn animate__faster"
@@ -109,7 +118,13 @@ export const NoteViews = () => {
           onChange={onInputChange}
         />
       </Grid>
-      <ImageGallery />
+      <Grid container justifyContent="end">
+        <Button onClick={onDelete} sx={{ mt: 2 }} color="error">
+          <DeleteOutline />
+          Borrar
+        </Button>
+      </Grid>
+      <ImageGallery images={note.imageUrls} />
     </Grid>
   );
 };
